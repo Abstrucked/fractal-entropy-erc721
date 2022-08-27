@@ -4,11 +4,18 @@ pragma solidity ^0.8.9;
 // Import this file to use console.log
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+// import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract EntropicFractals is ERC721, ERC721URIStorage, Ownable {
+/**
+ * @dev TODO 
+ * - Remove URI setup, all metadata will go onchain
+ * - Add metadata variables
+ * - Implement the rest of contract
+ */
+
+contract FractalEntropy is ERC721, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     error MaxSupplyReached();
@@ -20,9 +27,9 @@ contract EntropicFractals is ERC721, ERC721URIStorage, Ownable {
 
     constructor() ERC721("FractalEntropy", "FRCTL") {}
 
-    function _baseURI() internal pure override returns (string memory) {
-        return "https://entropicfractals.eth.link/nft/";
-    }
+    // function _baseURI() internal pure override returns (string memory) {
+    //     return "https://fractalentropy.eth.link/nft/";
+    // }
 
 
     function safeMint(address to) public onlyOwner {
@@ -39,10 +46,7 @@ contract EntropicFractals is ERC721, ERC721URIStorage, Ownable {
         super._burn(tokenId);
     }
 
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage)
         returns (string memory)
     {
         return super.tokenURI(tokenId);
