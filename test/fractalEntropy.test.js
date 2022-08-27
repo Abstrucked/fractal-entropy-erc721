@@ -2,7 +2,7 @@
 const { ethers, waffle } = require("hardhat");
 const { expect } = require("chai");
 
-describe("EntropicFractals contract", async () => {
+describe("FractalEntropy contract", async () => {
   let AEFToken;
   let token721;
   let _name='FractalEntropy';
@@ -11,7 +11,7 @@ describe("EntropicFractals contract", async () => {
   let account1,otheraccounts;
 
   beforeEach(async function () {
-    AEFToken = await ethers.getContractFactory("EntropicFractals");
+    AEFToken = await ethers.getContractFactory("FractalEntropy");
    [owner, account1, ...otheraccounts] = await ethers.getSigners();
 
     token721 = await AEFToken.deploy();

@@ -9,7 +9,7 @@ const hre = require("hardhat");
 async function main() {
   
 
-  const AEF = await hre.ethers.getContractFactory("EntropicFractals");
+  const AEF = await hre.ethers.getContractFactory("FractalEntropy");
   const aef = await AEF.deploy();
 
   await aef.deployed();
