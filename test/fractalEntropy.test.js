@@ -19,39 +19,53 @@ describe("FractalEntropy contract", async () => {
 
   describe("Should Deploy", async function () {
 
-    it("Should has the correct name and symbol ", async function () {
+    it("Should have the correct name and symbol ", async function () {
       expect(await token721.name()).to.equal(_name);
       expect(await token721.symbol()).to.equal(_symbol);
     });
+    it("Should set the sale to open", async function () {
+      await expect(await token721.toggleSale()).to.emit(token721, "SaleStateChange").withArgs(true);
+    })
+    it("Should revert with error SaleIsClosed()", async function () {
+      const address1=account1.address;
+      let response =  token721.safeMint(address1);
+          await expect(response).to.be.revertedWith("SaleIsClosed()");
+       
+    })
 
     it("Should mint a token with token ID 1 & 2 to account1", async function () {
-      const address1=account1.address;
+      const address1 = account1.address;
       
-      await token721.safeMint(address1);
+      await token721.toggleSale();
+      
+      await token721.safeMint( address1 );
       expect(await token721.ownerOf(ethers.BigNumber.from(0))).to.equal(address1);     
       
-      await token721.safeMint(address1);
+      await token721.safeMint( address1 );
       expect(await token721.ownerOf(ethers.BigNumber.from(1))).to.equal(address1);
       
-      expect(await token721.balanceOf(address1)).to.equal(ethers.BigNumber.from(2));
+      expect( await token721.balanceOf( address1 ) ).to.equal( ethers.BigNumber.from( 2 ) );
     });
 
     it("Should mint up to MAX_SUPPLY", async function () {
       const address1=account1.address;
+      await token721.toggleSale();
+
       let i;
-      for(i = 1; i < (MAX_SUPPLY+1); i++){
-        await token721.safeMint(address1); 
+      for( i = 1; i < ( MAX_SUPPLY + 1 ); i++ ) {
+        await token721.safeMint( address1 ); 
       }
-      expect(i == MAX_SUPPLY)
+      expect( i == MAX_SUPPLY )
     });
     
     it("Should revert with 'Max supply reached!'", async function () {
       const address1=account1.address;
       let i;
+      await token721.toggleSale();
+
       for(i = 1; i < (MAX_SUPPLY + 1); i++){
         await token721.safeMint(address1); 
         if(i == MAX_SUPPLY) {
-          console.log(i)
           let response =  token721.safeMint(address1);
           await expect(response).to.be.revertedWith("MaxSupplyReached()");
         }

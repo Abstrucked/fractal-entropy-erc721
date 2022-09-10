@@ -4,10 +4,10 @@ pragma solidity ^0.8.9;
 // Import this file to use console.log
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-// import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-
+import "./interfaces/IFractalEntropy.sol";
 /**
  * @dev TODO 
  * - Remove URI setup, all metadata will go onchain
@@ -15,13 +15,29 @@ import "@openzeppelin/contracts/utils/Counters.sol";
  * - Implement the rest of contract
  */
 
-contract FractalEntropy is ERC721, ERC721URIStorage, Ownable {
+contract FractalEntropy is IFractalEntropy, ERC721, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
-    error MaxSupplyReached();
+    
 
-
+    bool private _saleOpen = false;
+    // struct Metadata {
+    //     uint256 initX;
+    //     uint256 initY;
+    //     uint112 scale;
+    //     bytes32 palette iterations, bailout, pixels
+            
+    // }
+    
+    function saleOpen() view external returns (bool){
+        return _saleOpen;
+    }
+    function toggleSale() external onlyOwner {
+        _saleOpen = !_saleOpen;
+        emit SaleStateChange(_saleOpen);
+    }
     uint256 MAX_SUPPLY = 10;
+    bool public MINT_ENABLED = false;
 
     Counters.Counter private _tokenIdCounter;
 
@@ -32,8 +48,11 @@ contract FractalEntropy is ERC721, ERC721URIStorage, Ownable {
     // }
 
 
-    function safeMint(address to) public onlyOwner {
-        if(_tokenIdCounter.current() >= MAX_SUPPLY){
+    function safeMint(address to) public {
+        if(!_saleOpen) {
+            revert SaleIsClosed();
+        }
+        if(_tokenIdCounter.current() >= MAX_SUPPLY) {
             revert MaxSupplyReached();
         }
         uint256 tokenId = _tokenIdCounter.current();
@@ -42,7 +61,7 @@ contract FractalEntropy is ERC721, ERC721URIStorage, Ownable {
         _setTokenURI(tokenId, _baseURI());
     }    
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    function _burn(uint256 tokenId) internal onlyOwner override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
 
