@@ -15,37 +15,29 @@ import "./interfaces/IFractalEntropy.sol";
  */
 
 contract FractalEntropy is IFractalEntropy, ERC721, ERC721URIStorage, Ownable {
-    using Counters for Counters.Counter;
-
     
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIdCounter;
 
     bool private _MINT_ENABLED = false;
-    // struct Metadata {
-    //     uint256 initX;
-    //     uint256 initY;
-    //     uint112 scale;
-    //     bytes32 palette iterations, bailout, pixels
-            
-    // }
     
-    function saleOpen() view external returns (bool){
-        return _MINT_ENABLED;
-    }
-    function toggleSale() external onlyOwner {
-        _MINT_ENABLED = !_MINT_ENABLED;
-        emit SaleStateChange(_MINT_ENABLED);
-    }
     uint256 MAX_SUPPLY = 10;
     uint256 public minX;
     uint256 public minY;
 
-    Counters.Counter private _tokenIdCounter;
+    function saleOpen() view external returns (bool){
+        return _MINT_ENABLED;
+    }
+
+    function toggleSale() external onlyOwner {
+        _MINT_ENABLED = !_MINT_ENABLED;
+        emit SaleStateChange(_MINT_ENABLED);
+    }
 
     
 
-    constructor() ERC721("FractalEntropy", "FRCTL") {
-        
-    }
+    constructor() ERC721("FractalEntropy", "FRCTL") { }
+    
     /**
      * learn how to manmage IPFS
      * probably using the ipfsDB from turinglabs?
@@ -55,17 +47,19 @@ contract FractalEntropy is IFractalEntropy, ERC721, ERC721URIStorage, Ownable {
     }
 
 
-    function safeMint(address to) public {
+    function safeMint(address to, string memory tokenURI) public returns (uint256) {
         if(!_MINT_ENABLED) {
             revert SaleIsClosed();
         }
         if(_tokenIdCounter.current() >= MAX_SUPPLY) {
             revert MaxSupplyReached();
         }
-        uint256 tokenId = _tokenIdCounter.current();
-        _safeMint(to, tokenId);
         _tokenIdCounter.increment();
-        _setTokenURI(tokenId, _baseURI());
+        uint256 tokenId = _tokenIdCounter.current();
+        
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, tokenURI);
+        return tokenId;
     }    
 
     function _burn(uint256 tokenId) internal onlyOwner override(ERC721, ERC721URIStorage) {
