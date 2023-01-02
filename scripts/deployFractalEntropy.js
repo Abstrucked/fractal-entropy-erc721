@@ -7,8 +7,14 @@
 const hre = require("hardhat");
 
 async function main() {
-  
-
+  const COL = await hre.ethers.getContractFactory("ColorConverter");
+  const col = await COL.deploy();
+  await col.deployed();
+  const libColoreAddr = col.address;
+  const PAL = await hre.ethers.getContractFactory("Palette");
+  const palette = await PAL.deploy();
+  await palette.deployed();
+  const libPaletteAddr = palette.address;
   const AEF = await hre.ethers.getContractFactory("FractalEntropy");
   const aef = await AEF.deploy();
 
