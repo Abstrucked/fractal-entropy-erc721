@@ -14,6 +14,10 @@ module.exports = {
     }
   },
   networks: {
-    accounts: account
+    goerli: {
+      id: 5,
+      url: process.env.GOERLI,
+      accounts: [account]
+    }
   }
 };

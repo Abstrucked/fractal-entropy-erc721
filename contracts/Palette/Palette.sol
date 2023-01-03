@@ -45,7 +45,7 @@ contract Palette is ERC721 {
   }
 
   function generateSeed(uint256 _tokenId) private view returns (bytes32){
-    return Utils.randomBytes32(string(abi.encodePacked(block.timestamp, msg.sender, _tokenId)));
+    return Utils.randomBytes32(string(abi.encode(block.timestamp, msg.sender, _tokenId)));
   }
 
   function getSeed(uint256 _tokenId) external view returns (bytes32 ){
