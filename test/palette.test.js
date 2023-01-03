@@ -65,9 +65,28 @@ describe("Palette contract", async () => {
       const tx2  = await token721.safeMint( address1);
       tx2.wait()
 
-      console.log(await token721.paletteToString(ethers.BigNumber.from(2)))
+      console.log(await token721.paletteToString(ethers.BigNumber.from(1)))
+      console.log(await token721.image(ethers.BigNumber.from(1)))
+      console.log(await token721.image(ethers.BigNumber.from(2)))
+      
       // console.log(await token721.palette(ethers.BigNumber.from(1)))
       expect( await token721.balanceOf( address1 ) ).to.equal( ethers.BigNumber.from( 2 ) );
+    });
+
+    it("Should mint 100", async function () {
+      const address1 = account1.address;
+      
+      for( let i=0; i<100; i++) {
+        const tx1  = await token721.safeMint( address1);
+        tx1.wait()  
+      }
+      
+
+      console.log(await token721.image(ethers.BigNumber.from(10)))
+      console.log(await token721.image(ethers.BigNumber.from(100)))
+      
+      // console.log(await token721.palette(ethers.BigNumber.from(1)))
+      expect( await token721.minted()).to.equal( ethers.BigNumber.from( 100 ));
     });
   });
 });

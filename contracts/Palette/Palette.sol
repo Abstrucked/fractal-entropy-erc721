@@ -59,9 +59,12 @@ contract Palette is ERC721 {
     return renderer.getBasePalette(_palettes[_tokenId]);
   }
 
-  function paletteToString(uint256 _tokenId) public view returns (bytes[32] memory) {
-    return  renderer.getPalette(_tokenId);
+  function paletteToString(uint256 _tokenId) public view returns (uint256[3][32] memory) {
+    return  renderer.getPalette(_tokenId,  _palettes[_tokenId]);
   }
   
+  function image(uint256 _tokenId) public view returns(string memory) {
+    return renderer.drawPalette(_tokenId, _palettes[_tokenId]);
+  }
 
 }
