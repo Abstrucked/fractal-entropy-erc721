@@ -67,16 +67,6 @@ contract PaletteRenderer {
             " ",
             Utils.uint2str(SIZE),
             '" xmlns="http://www.w3.org/2000/svg">'
-            
-            // '<circle cx="',
-            // Utils.uint2str(SIZE / 2),
-            // '" cy="',
-            // Utils.uint2str(SIZE / 2),
-            // '" r="',
-            // Utils.uint2str(starRadius),
-            // '" ',
-            // starAttributes,
-            // "</svg>"
           );
           string memory blocks = SquareSVG(_tokenId, _seed);
           renderSvg = string.concat(renderSvg, blocks, "</svg>");
