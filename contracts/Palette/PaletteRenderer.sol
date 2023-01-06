@@ -8,6 +8,55 @@ import "hardhat/console.sol";
 contract PaletteRenderer {
     uint256 constant SIZE = 512;
 
+
+    function getColorComponentRed(uint256 value)
+        internal
+        pure
+        returns (uint16)
+    {
+        return uint16((value >> 8) & 0xf);
+    }
+
+    function getColorComponentGreen(uint256 value)
+        internal
+        pure
+        returns (uint16)
+    {
+        return uint16((value >> 4) & 0xf);
+    }
+
+    function getColorComponentBlue(uint256 value)
+        internal
+        pure
+        returns (uint16)
+    {
+        return uint16(value & 0xf);
+    }
+
+    bytes16 private constant _HEX_SYMBOLS = "0123456789abcdef";
+
+    function getColorHexCode(uint256 value)
+        internal
+        pure
+        returns (string memory)
+    {
+        uint16 red = getColorComponentRed(value);
+        uint16 green = getColorComponentGreen(value);
+        uint16 blue = getColorComponentBlue(value);
+
+        bytes memory buffer = new bytes(7);
+
+        buffer[0] = "#";
+        buffer[1] = _HEX_SYMBOLS[red];
+        buffer[2] = _HEX_SYMBOLS[red];
+        buffer[3] = _HEX_SYMBOLS[green];
+        buffer[4] = _HEX_SYMBOLS[green];
+        buffer[5] = _HEX_SYMBOLS[blue];
+        buffer[6] = _HEX_SYMBOLS[blue];
+
+        return string(buffer);
+    }
+
     function getBasePalette(bytes32 _seed) public pure returns (bytes3[32] memory){
         bytes memory basePalette = bytes(abi.encodePacked(_seed));
         // uint8 size = uint8(basePalette.length);

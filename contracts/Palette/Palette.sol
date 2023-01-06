@@ -48,7 +48,7 @@ contract Palette is ERC721 {
     return Utils.randomBytes32(string(abi.encode(block.timestamp, msg.sender, _tokenId)));
   }
 
-  function getSeed(uint256 _tokenId) external view returns (bytes32 ){
+  function getSeed(uint256 _tokenId) external view returns (bytes32){
     if(_tokenId > _tokenIdCounter.current()) {
       revert("TokenId does not exist");
     }
