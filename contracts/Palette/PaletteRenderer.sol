@@ -6,7 +6,7 @@ import "../libraries/Utils.sol";
 import "hardhat/console.sol";
 
 contract PaletteRenderer {
-    uint256 SIZE = 512;
+    uint256 constant SIZE = 512;
 
     function getBasePalette(bytes32 _seed) public pure returns (bytes3[32] memory){
         bytes memory basePalette = bytes(abi.encodePacked(_seed));
@@ -75,56 +75,41 @@ contract PaletteRenderer {
     }
 
     
-    function getPalette(uint256 _tokenId, bytes32 _seed) public pure returns (uint256[3][32] memory){
+    function getPalette(uint256 _tokenId, bytes32 _seed) public view returns (uint256[3][32] memory){
         uint256[3] memory color;
         uint256[3][32] memory palette;
         uint256 seed = asciiToInteger(_seed);
-        uint256 i = 0;
+        
         color[0] = Utils.randomRange(_tokenId, string.concat("Red", Utils.uint2str(seed)), 0, 255);
         color[1] = Utils.randomRange(_tokenId, string.concat("Green", Utils.uint2str(seed)), 0, 255);
         color[2] = Utils.randomRange(_tokenId, string.concat("Blue", Utils.uint2str(seed)), 0, 255);
         
         uint256[3][4] memory base;
-        base[0] = color;
+        base[0] = [color[0], color[1], color[2]];
         base[1] = [color[1], color[0], 255-color[0]];
         base[2] = [color[2], color[1], color[0]];
         base[3] = [color[0], color[1], 255-color[2]];
-        uint256 x = 0;
-        // for(uint b=0; b<4; b++) {
-        //     for(uint j=b*; j<b+8; j++) {
-        //         color[0] = base[0][b] ;
-        //         color[1] = base[1][b] ;
-        //         color[2] = base[2][b] ;
-        //         for(uint8 c=0; c<3; c++) {
-        //             if(color[c]>255) {
-        //                 color[c] = 255;
-        //             }
-        //         }
-                
-        //         palette[i] = [ color[0], color[1], color[2]];
-        //         i++;
-        //         x++;
-        //     }
-            
-        // }
-        x=0;
-        i=0;
+        console.log(base[0][base.length-2]);
+        uint8 x = 0;
+        uint8 j = 0;
+        uint8 i = 0;
         for(; i<32; i++) {
-            color[0] = base[0][x] + i*4;
-            color[1] = base[1][x] + i*4;
-            color[2] = base[2][x] + i*4;
+            
+            color[0] = base[x][0] + j*8;
+            color[1] = base[x][1] + j*8;
+            color[2] = base[x][2] + j*8;
             for(uint8 c=0; c<3; c++) {
                 if(color[c]>255) {
                     color[c] = 255;
                 }
             }
-            
+            j++;
             palette[i] = [ color[0], color[1], color[2]];
-            if(x%8 == 0) {
-                x = i/8;
+            if( i> 0 && i%8 == 0) {
+                x++;
             }
         }
-
+        console.logBytes32(_seed);
         return palette;
     }
     function getWebPalette(uint256 _tokenId, bytes32 _seed) public pure returns (bytes[32] memory){
