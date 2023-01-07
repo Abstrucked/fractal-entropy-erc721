@@ -66,8 +66,8 @@ describe("Palette contract", async () => {
       tx2.wait()
 
       console.log(await token721.paletteToString(ethers.BigNumber.from(1)))
-      console.log(await token721.image(ethers.BigNumber.from(1)))
-      console.log(await token721.image(ethers.BigNumber.from(2)))
+      // console.log(await token721.image(ethers.BigNumber.from(1)))
+      // console.log(await token721.image(ethers.BigNumber.from(2)))
       
       // console.log(await token721.palette(ethers.BigNumber.from(1)))
       expect( await token721.balanceOf( address1 ) ).to.equal( ethers.BigNumber.from( 2 ) );
@@ -82,8 +82,8 @@ describe("Palette contract", async () => {
       }
       
 
-      console.log(await token721.image(ethers.BigNumber.from(10)))
-      console.log(await token721.image(ethers.BigNumber.from(100)))
+      // console.log(await token721.image(ethers.BigNumber.from(10)))
+      // console.log(await token721.image(ethers.BigNumber.from(100)))
       
       // console.log(await token721.palette(ethers.BigNumber.from(1)))
       expect( await token721.minted()).to.equal( ethers.BigNumber.from( 100 ));

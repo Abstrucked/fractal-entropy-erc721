@@ -6,6 +6,7 @@ import "../libraries/Utils.sol";
 import "hardhat/console.sol";
 
 contract PaletteRenderer {
+    
     uint256 constant SIZE = 512;
 
     struct Color {
@@ -74,39 +75,39 @@ contract PaletteRenderer {
 
    
 
-    function SquareSVG(bytes32 seed) 
-        private 
-        view 
-        returns (string memory) 
-    {
-        string[32] memory palette = getPalette(seed);
-        // uint256 red = BytesLib.toUint256(palette[0], 0);
-        string memory colorTuple;
-        uint256 HEIGHT = 16;
-        string memory renderSvg;
-        for(uint256 i=0; i<palette.length; i++) {
-            colorTuple = string.concat(
-                Utils.uint2str(palette[i][0]),
-                ",",
-                Utils.uint2str(palette[i][1]),
-                ",",
-                Utils.uint2str(palette[i][2])
-              );
-            renderSvg = string.concat(
-                renderSvg,
-                '<rect width="',
-                    Utils.uint2str(SIZE),
-                    '" y="',
-                    Utils.uint2str(i*HEIGHT),
-                    '" height="',
-                    Utils.uint2str(HEIGHT),
-                    '" fill="rgb(',
-                    colorTuple,
-                    ')"></rect>'
-                );
-        }
-        return renderSvg;
-    }
+    // function SquareSVG(bytes32 seed) 
+    //     private 
+    //     view 
+    //     returns (string memory) 
+    // {
+    //     string[32] memory palette = getBasePalette(seed);
+    //     // uint256 red = BytesLib.toUint256(palette[0], 0);
+    //     string memory colorTuple;
+    //     uint256 HEIGHT = 16;
+    //     string memory renderSvg;
+    //     for(uint256 i=0; i<palette.length; i++) {
+    //         colorTuple = string.concat(
+    //             Utils.uint2str(palette[i][0]),
+    //             ",",
+    //             Utils.uint2str(palette[i][1]),
+    //             ",",
+    //             Utils.uint2str(palette[i][2])
+    //           );
+    //         renderSvg = string.concat(
+    //             renderSvg,
+    //             '<rect width="',
+    //                 Utils.uint2str(SIZE),
+    //                 '" y="',
+    //                 Utils.uint2str(i*HEIGHT),
+    //                 '" height="',
+    //                 Utils.uint2str(HEIGHT),
+    //                 '" fill="rgb(',
+    //                 colorTuple,
+    //                 ')"></rect>'
+    //             );
+    //     }
+    //     return renderSvg;
+    // }
 
     // function drawPalette(uint256 _tokenId, bytes32 _seed) public view returns (string memory) {
         
@@ -134,38 +135,31 @@ contract PaletteRenderer {
     function getBasePalette(bytes32 _seed) 
         public 
         view 
-        returns (Color[32] memory)
+        returns (Color[8] memory)
     {
-        Color[32] palette;
+        Color[8] memory palette;
         uint256 baseColor = generateColor( _seed);
 
-        Color base = Color( 
+        Color memory base = Color( 
             getColorComponentRed(baseColor), 
             getColorComponentGreen(baseColor), 
             getColorComponentBlue(baseColor)
         );
         
-        palette.push(base);
+        palette[0] = base;
+        // Gauge color to allow right algorithm
         bytes memory isColor = new bytes(1);
-        if(base.r > base.g && base.r > base.b) {
-            isColor = "r";
-        }else if(base.g > base.b) {
-            isColor = "g";
-        }else if(base.b > base.g) {
-            isColor = "b";
-        }else {
-            isColor = "x";
-        }
+        
 
-
-
-        palette.push(
+        
+        // Complementary
+        palette[1] =
             Color(
-                base.b,
-                base.g,
-                base.r  
-            )
-        );
+                255 - base.b,
+                255 - base.g,
+                255 - base.r  
+            );
+        console.logUint(palette[1].r);
         return palette;
     }
     
