@@ -11,13 +11,14 @@ module.exports = {
     optimizer: {
       enabled: true,
       runs: 90
-    }
+    },
+    accounts: [account, process.env.USER]
   },
   networks: {
     goerli: {
       id: 5,
       url: process.env.GOERLI,
-      accounts: [account]
+      
     }
   }
 };

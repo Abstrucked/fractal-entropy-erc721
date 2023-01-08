@@ -21,8 +21,13 @@ describe("Palette contract", async () => {
   let data;
   beforeEach(async function () {
     PALToken = await ethers.getContractFactory("Palette");
-    
-    RNDToken = await ethers.getContractFactory("PaletteRenderer");
+    const utilsCF = await ethers.getContractFactory("Utils");
+    const utils = await utilsCF.deploy();
+    await utils.deployed();
+    RNDToken = await ethers.getContractFactory("PaletteRenderer", {
+      libraries:{
+        Utils: utils.address,
+      }});
     renderer = await RNDToken.deploy();
     await renderer.deployed();
     [owner, account1, ...otheraccounts] = await ethers.getSigners();
@@ -50,7 +55,7 @@ describe("Palette contract", async () => {
     
     // it("Should revert with error SaleIsClosed()", async function () {
     //   const address1=account1.address;
-    //   let response =  token721.safeMint(address1, ethers.utils.id("firstNFT"));
+    //   let response =  token721.mint(address1, ethers.utils.id("firstNFT"));
     //       await expect(response).to.be.revertedWith("SaleIsClosed()");
        
     // })
@@ -59,34 +64,36 @@ describe("Palette contract", async () => {
       const address1 = account1.address;
       
       
-      const tx1  = await token721.safeMint( address1);
+      const tx1  = await token721.connect(account1).mint();
       tx1.wait()
       // expect(await token721.ownerOf(ethers.BigNumber.from(1))).to.equal(address1);     
-      const tx2  = await token721.safeMint( address1);
+      const tx2  = await token721.mint();
       tx2.wait()
 
-      console.log(await token721.paletteToString(ethers.BigNumber.from(1)))
-      // console.log(await token721.image(ethers.BigNumber.from(1)))
+      // console.log(await token721.paletteToString(ethers.BigNumber.from(1)))
+      console.log(await token721.image(ethers.BigNumber.from(1)))
       // console.log(await token721.image(ethers.BigNumber.from(2)))
       
-      // console.log(await token721.palette(ethers.BigNumber.from(1)))
-      expect( await token721.balanceOf( address1 ) ).to.equal( ethers.BigNumber.from( 2 ) );
+      expect( await token721.balanceOf( owner.address ) ).to.equal( ethers.BigNumber.from( 1 ) );
     });
 
     it("Should mint 100", async function () {
       const address1 = account1.address;
       
       for( let i=0; i<100; i++) {
-        const tx1  = await token721.safeMint( address1);
+        const tx1  = await token721.mint();
         tx1.wait()  
+        // console.log(await token721.image(ethers.BigNumber.from(i+1)))
+        // console.log(await token721.webPalette(ethers.BigNumber.from(i+1)))
       }
       
 
-      // console.log(await token721.image(ethers.BigNumber.from(10)))
-      // console.log(await token721.image(ethers.BigNumber.from(100)))
-      
-      // console.log(await token721.palette(ethers.BigNumber.from(1)))
+      console.log(await token721.image(ethers.BigNumber.from(1)))
+      // console.log(await token721.image(ethers.BigNumber.from(50)))
+      console.log(await token721.rgbPalette(ethers.BigNumber.from(1)))
+      console.log(await token721.webPalette(ethers.BigNumber.from(1)))
       expect( await token721.minted()).to.equal( ethers.BigNumber.from( 100 ));
+      
     });
   });
 });

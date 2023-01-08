@@ -57,7 +57,7 @@ contract FractalEntropy is IFractalEntropy, ERC721, ERC721URIStorage, Ownable {
     }
 
     
-    function generateFractal(uint256 tokenId, address to) private pure returns (Fractal memory) {
+    function generateFractal(uint256 tokenId) private pure returns (Fractal memory) {
         uint256 xmin = Utils.randomRange(tokenId, "xmin", 650000000000000000, 680000000000000000);
         uint256 ymin = Utils.randomRange(tokenId, "ymin", 650000000000000000, 680000000000000000);
         uint256 scale = Utils.randomRange(tokenId,  "scale", 100, 2000);
@@ -77,7 +77,7 @@ contract FractalEntropy is IFractalEntropy, ERC721, ERC721URIStorage, Ownable {
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         
-        _fractals[tokenId] = generateFractal(tokenId, msg.sender);
+        _fractals[tokenId] = generateFractal(tokenId);
         
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, _tokenURI);
