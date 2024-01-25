@@ -83,7 +83,7 @@ describe("Palette contract", async () => {
       for( let i=0; i<100; i++) {
         const tx1  = await token721.mint();
         tx1.wait()  
-        // console.log(await token721.image(ethers.BigNumber.from(i+1)))
+        console.log(await token721.image(ethers.BigNumber.from(i+1)))
         // console.log(await token721.webPalette(ethers.BigNumber.from(i+1)))
       }
       

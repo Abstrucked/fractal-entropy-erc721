@@ -10,7 +10,7 @@ interface IFractalEntropy is IERC721 {
         uint256 ymin;
         uint8 pixels;
         uint32 scale;
-        bytes palette;
+        uint256 palette;
     }
 
     function isSaleOpen() external returns (bool);

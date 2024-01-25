@@ -24,12 +24,15 @@ contract FractalEntropy is IFractalEntropy, ERC721, ERC721URIStorage, Ownable {
 
 
     mapping(uint256 => Fractal) private _fractals;
-
+    Palette private _palette;
     bool private _MINT_ENABLED = false;
+    bool public isRevealed = false;
     string private _baseTokenUri;
     uint256 MAX_SUPPLY = 10;
+
     
-    string private _base_URI = "https://";
+    string private _base_URI="_";
+    
     function isSaleOpen() view external returns (bool){
         return _MINT_ENABLED;
     }
@@ -39,9 +42,14 @@ contract FractalEntropy is IFractalEntropy, ERC721, ERC721URIStorage, Ownable {
         emit SaleStateChange(_MINT_ENABLED);
     }
 
-    constructor() ERC721("FractalEntropy", "FRCTL") {
+    constructor(Palette palette) ERC721("FractalEntropy", "FRCTL") {
+        _palette = palette;
     }
     
+    function revealCollection() external onlyOwner {
+        
+    }
+
     function _baseURI() internal view override returns (string memory) {
         return _base_URI;
     }
@@ -62,7 +70,7 @@ contract FractalEntropy is IFractalEntropy, ERC721, ERC721URIStorage, Ownable {
         uint256 ymin = Utils.randomRange(tokenId, "ymin", 650000000000000000, 680000000000000000);
         uint256 scale = Utils.randomRange(tokenId,  "scale", 100, 2000);
         uint256 pixels = Utils.randomRange(tokenId, "pixels", 1, 6);
-        Fractal memory fractal = Fractal(xmin,ymin, uint8(pixels), uint32(scale), "0x0000000");
+        Fractal memory fractal = Fractal(xmin,ymin, uint8(pixels), uint32(scale), 0);
         return fractal;
     }
 
@@ -89,12 +97,12 @@ contract FractalEntropy is IFractalEntropy, ERC721, ERC721URIStorage, Ownable {
         return fractal;
     }
 
-    function changePalette(uint256 id, bytes memory data) public{
+    function changePalette(uint256 id, uint256 paletteId) public{
         if(ownerOf(id)!= msg.sender) {
             revert("Only the token owner can change palette");
         }
         Fractal storage fractal = _fractals[id];
-        fractal.palette = data;
+        fractal.palette = paletteId;
     }
 
     function _burn(uint256 tokenId) internal onlyOwner override(ERC721, ERC721URIStorage) {
